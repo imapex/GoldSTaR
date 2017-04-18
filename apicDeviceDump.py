@@ -1,17 +1,21 @@
 # import requests library
 import requests
+requests.packages.urllib3.disable_warnings()
 
 #import json library
 import json
 
+#import getpass to mask password entries
+import getpass
+
 controller='devnetapi.cisco.com/sandbox/apic_em'
 
-def getTicket():
+def getTicket(apic_username, apic_password):
     # put the ip address or dns of your apic-em controller in this url
     url = "https://" + controller + "/api/v1/ticket"
 
     #the username and password to access the APIC-EM Controller
-    payload = {"username":"devnetuser","password":"Cisco123!"}
+    payload = {"username":apic_username,"password":apic_password}
 
     #Content type must be included in the header
     header = {"content-type": "application/json"}
@@ -46,10 +50,31 @@ def getNetworkDevices(ticket):
   #convert data to json format.
     r_json=response.json()
 
+    allPlatformIds=[]  #List to hold PlatformIDs
+    runningVersions={}  #Dictionary to hold PlatformIDs, Software Versions
   #Iterate through network device data and print the id and series name of each device
     for i in r_json["response"]:
         print(i["hostname"] + "   " + i["platformId"] + "   " + i["softwareVersion"])
+        allPlatformIds.append(str(i["platformId"]))
+        runningVersions[str(i["platformId"])]=str(i["softwareVersion"]
 
-#call the functions
-theTicket=getTicket()
-getNetworkDevices(theTicket)
+def suggestedSoftware():
+    #Placeholder to house Suggested Software API code
+    suggestedSofwareVersion = []
+    print suggestedSoftwareVersion
+
+def main():
+
+    print "*************************************"
+    print "*        Welcome to GoldSTaR        *"
+    print "*************************************\n\n"
+    apic_username = raw_input("Enter Your APIC-EM Username (devnetuser): >> ")
+    apic_password = getpass.getpass("Enter Your APIC-EM Username (Cisco123!): >> ")
+
+    #call the functions
+    theTicket=getTicket(apic_username,apic_password)
+    getNetworkDevices(theTicket)
+
+#Start the App
+main()
+
