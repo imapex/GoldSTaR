@@ -56,7 +56,7 @@ def getNetworkDevices(ticket):
     for i in r_json["response"]:
         print(i["hostname"] + "   " + i["platformId"] + "   " + i["softwareVersion"])
         allPlatformIds.append(str(i["platformId"]))
-        runningVersions[str(i["platformId"])]=str(i["softwareVersion"]
+        runningVersions[str(i["platformId"])]=str(i["softwareVersion"])
 
 def suggestedSoftware():
     #Placeholder to house Suggested Software API code
