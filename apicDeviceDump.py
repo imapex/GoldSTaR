@@ -8,6 +8,9 @@ import json
 #import getpass to mask password entries
 import getpass
 
+#import Base64 for encoding Prime username/password combo
+import base64
+
 #define variables
 controller='devnetapi.cisco.com/sandbox/apic_em'
 allPlatformIds=[]  #List to hold PlatformIDs
@@ -35,7 +38,7 @@ def getTicket(apic_username, apic_password):
     return ticket
 
 
-def getNetworkDevices(ticket):
+def getDevicesFromAPICEM(ticket):
     #Define Globals
     global allPlatformIds
     global runningVersions
@@ -68,6 +71,25 @@ def suggestedSoftware():
     suggestedSofwareVersion = []
     print suggestedSoftwareVersion
 
+def getDevicesFromPrime(pi_username,pi_password):
+    #Get inventory information from Prime Infrastructure
+
+    #encode username/password into Base64
+    encoded = pi_username + ":" + pi_password
+    encoded = base64.b64encode(bytes(encoded))
+
+    url = "http://pi1.cisco.com/webacs/api/v1/data/Devices/"
+
+    headers = {
+    'authorization': "Basic " + encoded,
+    }
+
+    response = requests.request("GET", url, headers=headers)
+
+    print(response.text)
+
+
+
 def main():
     #define Globals
     global allPlatformIds
@@ -76,12 +98,32 @@ def main():
     print "*************************************"
     print "*        Welcome to GoldSTaR        *"
     print "*************************************\n\n"
-    apic_username = raw_input("Enter Your APIC-EM Username (devnetuser): >> ")
-    apic_password = getpass.getpass("Enter Your APIC-EM Username (Cisco123!): >> ")
 
-    #call the functions
-    theTicket=getTicket(apic_username,apic_password)
-    getNetworkDevices(theTicket)
+    print "Where Would You Like to Get Your Inventory From?\n"
+    print "1) APIC-EM"
+    print "2) Prime Infrastructure\n"
+
+    inventoryMenu = raw_input("Selection >> ")
+
+    if inventoryMenu == "1":
+
+        apic_username = raw_input("Enter Your APIC-EM Username (devnetuser): >> ")
+        apic_password = getpass.getpass("Enter Your APIC-EM Username (Cisco123!): >> ")
+
+        #call the functions
+        theTicket=getTicket(apic_username,apic_password)
+        getDevicesFromAPICEM(theTicket)
+
+    elif inventoryMenu == "2":
+
+        pi_username = raw_input("Enter Your Prime Infrastructure Username (): >> ")
+        pi_password = getpass.getpass("Enter Your Prime Infrastucture Password (): >> ")
+
+        #call the functions
+        getDevicesFromPrime(pi_username,pi_password)
+
+    else:
+        print "Wow, 1 or 2, is it really that difficult?"
 
     print "What Would You Like to Do?\n"
     print "1) Display Collected Platform IDs"
