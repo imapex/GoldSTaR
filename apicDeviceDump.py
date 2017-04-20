@@ -74,21 +74,29 @@ def suggestedSoftware():
 def getDevicesFromPrime(pi_username,pi_password):
     #Get inventory information from Prime Infrastructure
 
+    global allPlatformIds
+    global runningVersions
+
     #encode username/password into Base64
     encoded = pi_username + ":" + pi_password
     encoded = base64.b64encode(bytes(encoded))
 
-    url = "http://pi1.cisco.com/webacs/api/v1/data/Devices/"
+    url = "http://pi1.cisco.com/webacs/api/v1/data/Devices.json?.full=true"
 
     headers = {
-    'authorization': "Basic " + encoded,
+    'authorization': "Basic " + encoded
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.get(url, headers=headers, verify=False)
 
-    print(response.text)
-
-
+    response.raise_for_status()
+    for i in response.json()['queryResponse']['entity']:
+        if 'manufacturerPartNrs' in i['devicesDTO']:
+            allPlatformIds.append(str(i['devicesDTO']['manufacturerPartNrs']['manufacturerPartNr']))
+            #print (i['devicesDTO']['@id'], i['devicesDTO']['ipAddress'], i['devicesDTO']['manufacturerPartNrs']['manufacturerPartNr'])
+        elif 'softwareVersion' in i['devicesDTO']:
+            runningVersions.append((str(i['devicesDTO']['deviceType']), str(i['devicesDTO']['softwareVersion'])))
+            #print (i['devicesDTO']['@id'], i['devicesDTO']['ipAddress'], i['devicesDTO']['deviceType'], i['devicesDTO']['softwareVersion'])
 
 def main():
     #define Globals
