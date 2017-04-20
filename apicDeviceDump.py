@@ -82,22 +82,26 @@ def getDevicesFromPrime(pi_username,pi_password):
     encoded = base64.b64encode(bytes(encoded))
 
     url = "http://pi1.cisco.com/webacs/api/v1/data/Devices.json?.full=true"
+    url2 = "http://pi1.cisco.com/webacs/api/v1/data/InventoryDetails.json?.full=true"
 
     headers = {
     'authorization': "Basic " + encoded
     }
 
     response = requests.get(url, headers=headers, verify=False)
+    response2 = requests.get(url2, headers=headers, verify=False)
 
     response.raise_for_status()
+    response2.raise_for_status()
     for i in response.json()['queryResponse']['entity']:
         if 'manufacturerPartNrs' in i['devicesDTO']:
             allPlatformIds.append(str(i['devicesDTO']['manufacturerPartNrs']['manufacturerPartNr']))
             #print (i['devicesDTO']['@id'], i['devicesDTO']['ipAddress'], i['devicesDTO']['manufacturerPartNrs']['manufacturerPartNr'])
-        elif 'softwareVersion' in i['devicesDTO']:
-            runningVersions.append((str(i['devicesDTO']['deviceType']), str(i['devicesDTO']['softwareVersion'])))
-            #print (i['devicesDTO']['@id'], i['devicesDTO']['ipAddress'], i['devicesDTO']['deviceType'], i['devicesDTO']['softwareVersion'])
 
+    for i in response2.json()['queryResponse']['entity']:
+        if 'softwareVersion' in i['inventoryDetailsDTO']['summary']:
+            runningVersions.append((str(i['inventoryDetailsDTO']['summary']['deviceType']), str(i['inventoryDetailsDTO']['summary']['softwareVersion'])))
+          
 def main():
     #define Globals
     global allPlatformIds
