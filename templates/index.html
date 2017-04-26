@@ -18,20 +18,36 @@
     <div id="content">
       <h2>GoldSTaR</h2>
       <p><b>Collect Inventory Data from APIC-EM</b></p>
-      APIC-EM Username
-      <input type="text" name="apicem_username" maxlength="50" size="25">
+            <form action="/" method="post">
+      <div>
+          <label for="apic_username">APIC-EM Username</label>
+          <input type="text" name="apic_username" maxlength="50" size="25">
+      </div>
       <p>
-      APIC-EM Password
-      <input type="password" name="apicem_password" maxlength="50" size="25"></p>
+      <div>
+          <label for="apic_username">APIC-EM Password</label>
+          <input type="password" name="apic_password" maxlength="50" size="25"></p>
+          <input type="hidden" name="pi_username" value="">
+          <input type="hidden" name="pi_password" value="">
+      </div>
       <p></p>
-      <input type="submit" name="pi_submit">
+      <input type="submit" name="apicem_submit">
+      </form>
       <p><b>Collect Inventory Data from Prime Infrastructure</b></p>
-      Prime Infrastructure Username
-      <input type="text" name="pi_username" maxlength="50" size="25">
+      <form method="post">
+      <div>
+          <label for="pi_username">Prime Infrastructure Username</label>
+          <input type="text" name="pi_username" maxlength="50" size="25">
+      </div>
       <p>
-      Prime Infrastructure Password
-      <input type="password" name="pi_password" maxlength="50" size="25"></p>
+      <div>
+          <label for="pi_password">Prime Infrastructure Password</label>
+          <input type="password" name="pi_password" maxlength="50" size="25"></p>
+          <input type="hidden" name="apic_username" value="">
+          <input type="hidden" name="apic_password" value="">
+      </div>
       <input type="submit" name="pi_submit">
+      </form>
       
     </div>
     </div>
