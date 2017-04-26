@@ -18,12 +18,20 @@
     <div id="content">
       <h2>GoldSTaR</h2>
       <p><b><u>Your Current Invetory</u></b></p>
-
-  {{inventory}}
+    <table>
+        <tr>
+            <td>Model</td>
+            <td>Software Version</td>
+    {% for item in inventory %}
+              <tr>
+                  <td>{{ item[0] }}</td>
+                  <td>{{ item[1] }}</td>
+              </tr>
+    {% endfor %}
+    </table>
 
   </div>
   </div>
   </div>
   </body>
   </html>
-  
